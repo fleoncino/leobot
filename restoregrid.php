@@ -9,23 +9,20 @@ include "funzioni.inc.php";
 
 
 //main
-if ($argc< 7) {
-  die ("uso: ". $argv[0] ." ngrid coppia qta mingap maxgap identificativo\n");
-}
-
-if (($rit=checkparam($argv)) !== false) {
-  die ("$rit\n"); 
+if ($argc<> 2) {
+  die ("uso: ". $argv[0] ." identificativo\n");
 }
 
 $conn = new mysqli($server, $user, $pw, $db);
 if ($conn->connect_error) {
   die("Impossibile connettersi a database\n");
 }
-scrivilog("Inizio");
+scrivilog($argv[0]. " Inizio");
 try{
-	$b = new bot($argv[6], $conn, $argv[1], $argv[2], $argv[3], $argv[4], $argv[5]);
-	$b->pianifica();
-	$b->vai();
+  $a=leggibot($conn, $argv[1]);
+  $b = new bot($argv[1], $conn, $a[1], $a[2], $a[3], $a[4], $a[5]);
+	$b->restoreord();
+ 	$b->vai();
 }catch (Exception $e) {
     echo "Errore:\n",  $e->getMessage(), "\n";
 
