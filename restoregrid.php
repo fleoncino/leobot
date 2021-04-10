@@ -17,10 +17,12 @@ $conn = new mysqli($server, $user, $pw, $db);
 if ($conn->connect_error) {
   die("Impossibile connettersi a database\n");
 }
-scrivilog($argv[0]. " Inizio");
+$conndb=array("server"=>$server,"user"=>$user,"pw"=>$pw,"db"=>$db);
+
+scrivilogbot($argv[1],$argv[0]. " Inizio");
 try{
   $a=leggibot($conn, $argv[1]);
-  $b = new bot($argv[1], $conn, $a[1], $a[2], $a[3], $a[4], $a[5]);
+  $b = new bot($argv[1], $conndb, $a[1], $a[2], $a[3], $a[4], $a[5]);
 	$b->restoreord();
  	$b->vai();
 }catch (Exception $e) {

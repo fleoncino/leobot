@@ -21,9 +21,10 @@ $conn = new mysqli($server, $user, $pw, $db);
 if ($conn->connect_error) {
   die("Impossibile connettersi a database\n");
 }
-scrivilog("Inizio");
+scrivilogbot($argv[6],$argv[0]." Inizio");
+$conndb=array("server"=>$server,"user"=>$user,"pw"=>$pw,"db"=>$db);
 try{
-	$b = new bot($argv[6], $conn, $argv[1], $argv[2], $argv[3], $argv[4], $argv[5]);
+	$b = new bot($argv[6], $conndb, $argv[1], $argv[2], $argv[3], $argv[4], $argv[5]);
 	$b->pianifica();
 	$b->vai();
 }catch (Exception $e) {

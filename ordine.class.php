@@ -11,11 +11,11 @@ class ordine {
 	public $chiuso;
 	public $annullato;
 	private $idbot;
-	private $db;
+	private $conndb;
 	public $ord;  //array con response TRT dopo inserimento ordine 
 	public $executed;
 	public $inserted;
-	function __construct($segno,$coppia,$qta,$prezzo,$idbot,$db, $idord=false){
+	function __construct($segno,$coppia,$qta,$prezzo,$idbot,$conndb, $idord=false){
 		$this->segno=$segno;
 		$this->coppia=$coppia;
 		$this->qta=$qta-0;
@@ -25,22 +25,26 @@ class ordine {
 		$this->chiuso=false;
 		$this->annullato=false;
 		$this->idbot=$idbot;
-		$this->db=$db;
+		$this->conndb=$conndb;
 		$this->ord=array();
 		$this->executed=false;
 		$this->inserted=false;
 		if ($idord)	$this->id=$idord;
 	}
+	function scrivilog($s){
+		scrivilogbot($this->idbot,$s);
+	}
 	function immetti(){
 		$this->inviaordine();
 		if (!$this->inserted){
-			scrivilog("Fallito ordine: $this->segno $this->coppia $this->qta $this->prezzo " . $this->qta*$this->prezzo . "\n");
+			$this->scrivilog("Fallito ordine: $this->segno $this->coppia $this->qta $this->prezzo " . $this->qta*$this->prezzo . "\n");
 			throw new Exception("Fallito ordine: $this->segno $this->coppia $this->qta $this->prezzo " . $this->qta*$this->prezzo . "\n");
 		}
-		scrivilog("ordine: $this->id $this->segno $this->coppia $this->qta $this->prezzo " . $this->qta*$this->prezzo );
+		$this->scrivilog("ordine: $this->id $this->segno $this->coppia $this->qta $this->prezzo " . $this->qta*$this->prezzo );
 		// inserimento ordine in TRT
 		$q="INSERT INTO `ordini`(`id`, `segno`, `coppia`, `qta`, `qtaese`, `prezzo`, `prezzoese`, `chiuso`, `annullato`, `idbot`) VALUES (?,?,?,?,0,?,0,0,0,?)";
-		$stmt=$this->db->prepare($q);
+		$conn=connessione($this->conndb);  
+		$stmt=$conn->prepare($q);
 		$stmt->bind_param('sssdds',
                                         $this->id,
                                         $this->segno,
@@ -51,7 +55,7 @@ class ordine {
                         );
 		$stmt->execute();
 		$rowinserted=$stmt->affected_rows;
-		if ($rowinserted<>1) scrivilog("Errore inserimento ordine in DB:$this->id $this->segno $this->coppia $this->qta $this->prezzo $this->idbot");
+		if ($rowinserted<>1) $this->scrivilog("Errore inserimento ordine in DB:$this->id $this->segno $this->coppia $this->qta $this->prezzo $this->idbot");
                 $stmt->close();
 	}
 	function inviaordine(){
@@ -71,13 +75,12 @@ class ordine {
 		curl_setopt($ch,CURLOPT_HTTPHEADER,$headers);
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 		$callResult=curl_exec($ch);
-		scrivilog(json_encode($params));
-		scrivilog($callResult);
+		$this->scrivilog(json_encode($params));
+		$this->scrivilog($callResult);
 		if ($callResult) {
 			$this->inserted=true;
 			$this->ord=json_decode($callResult);
 			$this->id=$this->ord->id;
-			
 		}
 	}
 	function annulla(){
@@ -102,8 +105,9 @@ class ordine {
 		$result=json_decode($callResult,true);
 		if ($result["status"]=="executed"){
 			$this->executed=true;
-			$this->db->query("UPDATE `ordini` set chiuso=1 where id=".$this->id);		
-			scrivilog("Eseguito $callResult");
+			$conn=connessione($this->conndb);  
+			$conn->query("UPDATE `ordini` set chiuso=1 where id=".$this->id);		
+			$this->scrivilog("Eseguito $callResult");
 		}
 	}
 }
