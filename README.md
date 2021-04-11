@@ -1,7 +1,7 @@
 # leobot
 crypto bot
 
-ATTENZIONE: software non testato completamente e mancante di numerosi controlli.i Usate a vostro rischio e pericolo.
+ATTENZIONE: software non testato completamente e mancante di numerosi controlli. Usate a vostro rischio e pericolo.
 
 Applicazione che implementa un grid bot per l'exchange The Rock Trading (https://www.therocktrading.com/referral/557) N.B. il link contiene il mio referral code. 
 
