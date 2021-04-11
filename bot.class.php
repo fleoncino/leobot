@@ -96,9 +96,9 @@ class bot {
 	function vai(){
 		while (1){
 			//$this->checkbot();
-			//$this->checkbot();
+			//$this->checkbot2();
 			$this->checkbot3();
-			usleep(400);
+			usleep(800);
 			echo ".";
 		}
 	}
@@ -110,19 +110,19 @@ class bot {
 				if (!isset($arridord[$o->id])){//se l'ordine non risulta a TRT devo controllare se è chiuso
 					$o->checkstato();
 					if ($o->executed) {
-						$this->scrivilog("Eseguito $o->id $o->segno $o->coppia $o->qta $o->prezzo " . $o->qta*$o->prezzo );
+						$messaggio="Eseguito $o->id $o->segno $o->coppia $o->qta $o->prezzo " . $o->qta*$o->prezzo ;
 						$this->scrivilog("IMMETTO NUOVO ORDINE");
 						if ($o->segno=='buy'){
 							$prezzo=$o->prezzo+$this->mingap;
 							$ord= new ordine ("sell",$o->coppia,$o->qta,$prezzo, $this->idbot, $this->conndb);
-							$messaggio= "sell " . $o->coppia . " " . $o->qta. " " . $o->prezzo . " " . $this->mingap ." $prezzo";
+							$messaggio.= "\nNuovo: sell " . $o->coppia . " " . $o->qta. " " . $o->prezzo . " " . $this->mingap ." $prezzo";
 						}else {
 							$prezzo=$o->prezzo-$this->mingap;
 							$ord= new ordine ("buy",$o->coppia,$o->qta,$prezzo, $this->idbot, $this->conndb);
-							$messaggio = "buy " . $o->coppia . " " . $o->qta. " " . $o->prezzo . " ". $this->mingap ." $prezzo";
+							$messaggio .= "\nNuovo: buy " . $o->coppia . " " . $o->qta. " " . $o->prezzo . " ". $this->mingap ." $prezzo";
 						}
 						InviaMessaggioTelegram($messaggio);
-						echo "$messaggio\n";
+						$this->scrivilog($messaggio);
 						$this->ordini[]=$ord;
 						$ord->immetti();
 		
@@ -136,6 +136,7 @@ class bot {
 
 	function checkbot2(){
 		//fa una chiamata API TRT per avere tutti gli ordini li confronta con il DB e lavora solo su quelli che non sono aperti
+		//Mai ussata
 		$in=elencoidordini($this->coppia);
 		$q="select id from ordini where id not in $in and chiuso=0 and idbot='" . $this->idbot."'";
 		$this->scrivilog($q);
