@@ -4,17 +4,21 @@ ATTENZIONE: software non testato completamente e mancante di numerosi controlli.
 Applicazione che implementa un grid bot per l'exchange The Rock Trading (https://www.therocktrading.com/referral/557) N.B. il link contiene il mio referral code.  
 L'applicazione è stata sviluppata in ambiente Linux, per farla girare su altri S.O. necessita di adattamento.  
 E' composta di un set di classi e di due script:  
-- gridbot.php crea il bot e lo avvia  
-- restoregrid.php riavvia un bot interrotto.  
+- gridbot.php crea il bot e lo avvia
+- restoregrid.php riavvia un bot interrotto.
+
 Il bot invia un messaggio a un canale telegram per ogni ordine che viene eseguito, se non si dispone di un canale telegram è sufficiente rendere inoperativa la funzione di invio.  
 Requisiti:  
-- Mysql  
+- Mysql
 - php-cli
+
 E' necessario disporre di API KEY dispositive.  
 La configurazione prevede di editare e copiare sotto /etc/gridbot i file  
-- headers.inc.php  
+- headers.inc.php
 - telegram.inc.php
+
 in cui sono memorizzate le chiavi di sicurezza per TRT e Telegram.  
+
 Va inoltre editato il file config.php per inserire i dati relativi al DB mysql  
 Il DB mysql ha solo 2 tabelle e può essere creato con lo script creadb.sql  
 Utilizzo:  
