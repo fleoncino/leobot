@@ -31,6 +31,7 @@ Il DB mysql ha solo 2 tabelle e può essere creato con lo script creadb.sql
 
 Utilizzo:
 php gridbot.php numero_grid coppia qta_singolo_ordine min_intervallo max_intervallo nomebot
+
 Esempio di utilizzo:
 php gridbot.php 10 BTCEUR 0.001 500 1000 btcbot01
 
@@ -40,11 +41,9 @@ Il bot parte dalla media tra bid e ask e imposta gli ordini utilizzando min_inte
 Se il lancio viene interrotto per qualsiasi motivo è possibile far ripartire il bot con lo script restorebot.php.
 
 Utilizzo:
-
 php restorebot.php nomebot
 
 Esempio:
-
 php restorebot.php btcbot01
 
 
